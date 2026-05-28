@@ -24,3 +24,27 @@ function getFlash(): ?array {
 function old(string $key, string $default = ''): string {
     return e($_POST[$key] ?? $default);
 }
+
+function clientIp(): string {
+    $keys = [
+        'HTTP_CLIENT_IP',
+        'HTTP_X_FORWARDED_FOR',
+        'REMOTE_ADDR',
+    ];
+
+    foreach ($keys as $key) {
+        if (empty($_SERVER[$key])) {
+            continue;
+        }
+        $value = trim((string)$_SERVER[$key]);
+        if ($key === 'HTTP_X_FORWARDED_FOR') {
+            $parts = explode(',', $value);
+            $value = trim($parts[0]);
+        }
+        if ($value !== '') {
+            return $value;
+        }
+    }
+
+    return '0.0.0.0';
+}

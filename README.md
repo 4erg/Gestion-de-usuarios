@@ -1,15 +1,16 @@
-# Sistema de Gestión de Usuarios con Roles
+# Sistema de Gestion de Usuarios con Roles
 
-Proyecto desarrollado en PHP con Programación Orientada a Objetos, PDO, MySQL y patrón MVC.
+Proyecto desarrollado en PHP con Programacion Orientada a Objetos, PDO, MySQL y patron MVC.
 
 ## Requisitos
 
 - XAMPP, WAMP o servidor local equivalente
 - PHP 8.0 o superior
-- MySQL / MariaDB
+- MySQL o MariaDB
+- Extension `pdo_mysql` habilitada
 - Navegador web
 
-## Instalación
+## Instalacion
 
 1. Copia la carpeta `gestion-usuarios` dentro de `htdocs` si usas XAMPP.
 2. Abre phpMyAdmin.
@@ -19,123 +20,126 @@ Proyecto desarrollado en PHP con Programación Orientada a Objetos, PDO, MySQL y
 database/database.sql
 ```
 
-4. Revisa la conexión en:
+4. Verifica la conexion en:
 
 ```text
 config/Database.php
 ```
 
-Por defecto está configurado así:
+Configuracion por defecto:
 
-```php
+```text
 host: localhost
 database: usuarios_mvc
 usuario: root
-contraseña: vacía
+contrasena: vacia
 ```
 
-5. Ingresa desde el navegador:
+## Como abrir el proyecto
+
+- URL principal:
 
 ```text
 http://localhost/gestion-usuarios/public/
 ```
 
-## Credenciales de acceso
+- URL directa de login:
+
+```text
+http://localhost/gestion-usuarios/public/index.php?action=login
+```
+
+- URL de logout:
+
+```text
+http://localhost/gestion-usuarios/public/index.php?action=logout
+```
+
+- URL de logs (solo admin):
+
+```text
+http://localhost/gestion-usuarios/public/index.php?action=logs
+```
+
+## Verificacion rapida
+
+Si ves error de conexion a base de datos:
+
+1. Confirma que MySQL este encendido en XAMPP.
+2. Revisa usuario y contrasena en `config/Database.php`.
+3. Verifica que exista la base `usuarios_mvc`.
+
+## Credenciales de prueba
 
 - Admin: `admin@sistema.com` / `password`
 - Usuario: `usuario@test.com` / `password`
 
-## Características
+## Caracteristicas
 
-- Login con email y contraseña
+- Login con email y contrasena
 - Logout
 - Sesiones PHP
 - Registro de usuarios
 - CRUD de usuarios para administrador
-- Edición de perfil propio para usuario normal
-- Cambio de contraseña
+- Edicion de perfil propio para usuario normal
+- Cambio de contrasena
 - Roles `admin` y `user`
-- Actualización de último acceso
-- Registro de fecha de creación y actualización
-- Validación de email único
-- Contraseñas protegidas con `password_hash()` y `password_verify()`
-- Consultas seguras con Prepared Statements
+- Actualizacion de ultimo acceso
+- Registro de fecha de creacion y actualizacion
+- Validacion de email unico
+- Contrasenas protegidas con `password_hash()` y `password_verify()`
+- Consultas seguras con prepared statements
 - Salidas protegidas con `htmlspecialchars()`
 - Filtros por nombre, email y rol en el listado de usuarios
-- Diseño responsive con CSS
+- Diseno responsive con CSS
+- Sistema de logs (bonus): login fallido, creacion/edicion/eliminacion de usuarios e IP de la peticion
 
 ## Estructura MVC
 
 ```text
 gestion-usuarios/
-├── config/
-│   └── Database.php
-├── models/
-│   ├── Usuario.php
-│   └── Auth.php
-├── controllers/
-│   ├── UsuarioController.php
-│   └── AuthController.php
-├── views/
-│   ├── layout/
-│   ├── auth/
-│   └── usuarios/
-├── middleware/
-│   └── AuthMiddleware.php
-├── public/
-│   └── index.php
-├── assets/
-│   └── css/
-│       └── style.css
-├── database/
-│   └── database.sql
-├── helpers.php
-└── README.md
+|-- config/
+|   `-- Database.php
+|-- models/
+|   |-- Usuario.php
+|   `-- Auth.php
+|   `-- Log.php
+|-- controllers/
+|   |-- UsuarioController.php
+|   `-- AuthController.php
+|-- views/
+|   |-- layout/
+|   |-- auth/
+|   |-- logs/
+|   `-- usuarios/
+|-- middleware/
+|   `-- AuthMiddleware.php
+|-- public/
+|   `-- index.php
+|-- assets/
+|   `-- css/
+|       `-- style.css
+|-- database/
+|   `-- database.sql
+|-- helpers.php
+`-- README.md
 ```
 
-## Explicación de arquitectura
+## Nota
 
-### Modelo
+La eliminacion de usuarios se implemento como desactivacion logica, cambiando el campo `activo` a `0`.
 
-Los modelos contienen la lógica de negocio y las consultas a la base de datos.
+## Bonus de logs
 
-- `Usuario.php`: gestiona CRUD, validaciones, email único, cambio de contraseña y último acceso.
-- `Auth.php`: gestiona login, logout, usuario actual y verificación de roles.
+Este proyecto incluye una vista de logs para administradores en `action=logs`.
 
-### Vista
+Eventos registrados:
 
-Las vistas contienen la interfaz del sistema.
+- Intentos de login fallidos
+- Login exitoso
+- Creacion de usuarios
+- Edicion de usuarios
+- Eliminacion logica (desactivacion) de usuarios
+- IP de cada peticion
 
-- `views/auth/login.php`
-- `views/auth/register.php`
-- `views/usuarios/index.php`
-- `views/usuarios/edit.php`
-- `views/usuarios/perfil.php`
-- `views/layout/header.php`
-- `views/layout/footer.php`
-
-### Controlador
-
-Los controladores reciben la petición, llaman a los modelos y cargan las vistas.
-
-- `AuthController.php`: login, logout y registro.
-- `UsuarioController.php`: listado, edición, actualización, eliminación, perfil y cambio de contraseña.
-
-### Middleware
-
-`AuthMiddleware.php` protege rutas privadas y valida si el usuario tiene rol administrador.
-
-## Capturas de pantalla
-
-Agregar aquí las capturas del sistema funcionando:
-
-- Login
-- Registro
-- Listado de usuarios como admin
-- Edición de usuario
-- Perfil del usuario
-- Cambio de contraseña
-
-## Observación
-
-La eliminación de usuarios se implementó como desactivación lógica, cambiando el campo `activo` a `0`. Esto evita borrar datos importantes definitivamente.
+Si tu base de datos ya existia antes de este cambio, ejecuta el bloque `CREATE TABLE logs ...` de `database/database.sql` para crear la tabla.

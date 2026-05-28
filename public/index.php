@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 require_once __DIR__ . '/../helpers.php';
@@ -49,6 +49,9 @@ try {
             if ($id <= 0) { redirect('usuarios'); }
             $usuarioController->delete($id);
             break;
+        case 'logs':
+            $usuarioController->logs();
+            break;
         case 'perfil':
             $usuarioController->perfil();
             break;
@@ -59,7 +62,7 @@ try {
         default:
             http_response_code(404);
             require __DIR__ . '/../views/layout/header.php';
-            echo '<div class="card"><h1>404</h1><p>Página no encontrada.</p><a class="btn" href="index.php?action=dashboard">Volver</a></div>';
+            echo '<div class="card"><h1>404</h1><p>PÃ¡gina no encontrada.</p><a class="btn" href="index.php?action=dashboard">Volver</a></div>';
             require __DIR__ . '/../views/layout/footer.php';
             break;
     }

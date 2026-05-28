@@ -1,12 +1,16 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../models/Usuario.php';
+require_once __DIR__ . '/../models/Auth.php';
+require_once __DIR__ . '/../models/Log.php';
 require_once __DIR__ . '/../middleware/AuthMiddleware.php';
 
 class UsuarioController {
     private Usuario $usuarioModel;
+    private Log $logModel;
 
     public function __construct() {
         $this->usuarioModel = new Usuario();
+        $this->logModel = new Log();
     }
 
     public function dashboard(): void {
@@ -24,6 +28,12 @@ class UsuarioController {
         $role = trim($_GET['rol'] ?? '');
         $usuarios = $this->usuarioModel->getAll($search ?: null, $role ?: null);
         require __DIR__ . '/../views/usuarios/index.php';
+    }
+
+    public function logs(): void {
+        AuthMiddleware::adminOnly();
+        $logs = $this->logModel->getAll(300);
+        require __DIR__ . '/../views/logs/index.php';
     }
 
     public function edit(int $id): void {
@@ -76,6 +86,14 @@ class UsuarioController {
                 $_SESSION['user']['email'] = $_POST['email'];
             }
 
+            $this->safeLog(
+                'usuario_editado',
+                (int)$current['id'],
+                $current['email'] ?? null,
+                $id,
+                'Actualizacion de datos de usuario'
+            );
+
             setFlash('success', 'Usuario actualizado correctamente.');
             redirect($current['rol'] === 'admin' ? 'usuarios' : 'perfil');
         } catch (Throwable $e) {
@@ -92,6 +110,13 @@ class UsuarioController {
             redirect('usuarios');
         }
         $this->usuarioModel->delete($id);
+        $this->safeLog(
+            'usuario_eliminado',
+            (int)$_SESSION['user']['id'],
+            $_SESSION['user']['email'] ?? null,
+            $id,
+            'Desactivacion logica de usuario'
+        );
         setFlash('success', 'Usuario desactivado correctamente.');
         redirect('usuarios');
     }
@@ -119,5 +144,26 @@ class UsuarioController {
             setFlash('error', $e->getMessage());
         }
         redirect('perfil');
+    }
+
+    private function safeLog(
+        string $evento,
+        ?int $usuarioId,
+        ?string $usuarioEmail,
+        ?int $objetivoUsuarioId,
+        ?string $detalle = null
+    ): void {
+        try {
+            $this->logModel->create(
+                $evento,
+                $usuarioId,
+                $usuarioEmail,
+                $objetivoUsuarioId,
+                clientIp(),
+                $detalle
+            );
+        } catch (Throwable $e) {
+            // Evita romper el flujo principal por fallos de logging.
+        }
     }
 }

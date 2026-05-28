@@ -14,6 +14,7 @@
         <?php if ($currentUser): ?>
             <?php if ($currentUser['rol'] === 'admin'): ?>
                 <a href="index.php?action=usuarios">Usuarios</a>
+                <a href="index.php?action=logs">Logs</a>
             <?php endif; ?>
             <a href="index.php?action=perfil">Mi perfil</a>
             <a href="index.php?action=logout">Salir</a>
