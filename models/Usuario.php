@@ -117,6 +117,18 @@ class Usuario {
         ]);
     }
 
+    public function verifyPassword(int $id, string $password): bool {
+        $stmt = $this->db->prepare("SELECT password FROM usuarios WHERE id = :id LIMIT 1");
+        $stmt->execute([':id' => $id]);
+        $hash = $stmt->fetchColumn();
+
+        if (!is_string($hash) || $hash === '') {
+            return false;
+        }
+
+        return password_verify($password, $hash);
+    }
+
     public function delete(int $id): bool {
         $stmt = $this->db->prepare("UPDATE usuarios SET activo = 0 WHERE id = :id");
         return $stmt->execute([':id' => $id]);

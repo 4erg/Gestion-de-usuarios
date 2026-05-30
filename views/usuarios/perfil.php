@@ -15,6 +15,9 @@
     <div class="card">
         <h2>Cambiar contraseña</h2>
         <form method="POST" action="index.php?action=change_password" class="form">
+            <label>Contraseña actual</label>
+            <input type="password" name="current_password" required minlength="6">
+
             <label>Nueva contraseña</label>
             <input type="password" name="new_password" required minlength="6">
 

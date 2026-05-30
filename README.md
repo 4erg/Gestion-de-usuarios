@@ -61,6 +61,39 @@ http://localhost/gestion-usuarios/public/index.php?action=logout
 http://localhost/gestion-usuarios/public/index.php?action=logs
 ```
 
+## Flujo de funcionamiento (paso a paso)
+
+### 1) Pantalla de inicio de sesión
+![Paso 1 - Login](image/README/1780113171747.png)
+
+### 2) Ir al registro de usuario
+![Paso 2 - Formulario de registro](image/README/1780113223261.png)
+
+### 3) Completar datos y crear cuenta
+![Paso 3 - Registro completo](image/README/1780113230809.png)
+
+### 4) Confirmación de registro y retorno a login
+![Paso 4 - Registro exitoso](image/README/1780113238519.png)
+
+### 5) Iniciar sesión como administrador
+![Paso 5 - Gestión de usuarios](image/README/1780113215509.png)
+
+### 6) Ver nuevo usuario en el listado
+![Paso 6 - Usuario creado](image/README/1780113246703.png)
+
+### 7) Ir a Mi perfil
+![Paso 7 - Perfil de usuario](image/README/1780113253200.png)
+
+### 8) Cambiar contraseña (con contraseña actual)
+![Paso 8 - Formulario actualizado](image/README/1780113258771.png)
+
+### 9) Confirmación de contraseña actualizada
+![Paso 9 - Cambio exitoso](image/README/1780113264156.png)
+
+### 10) Nota sobre logs
+Si no existe la tabla `logs`, puede aparecer este error al abrir `action=logs`.
+![Paso 10 - Error por tabla logs faltante](image/README/1780113266542.png)
+
 ## Verificacion rapida
 
 Si ves error de conexion a base de datos:

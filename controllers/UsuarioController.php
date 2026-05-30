@@ -129,8 +129,15 @@ class UsuarioController {
 
     public function changePassword(): void {
         AuthMiddleware::check();
+        $currentPassword = $_POST['current_password'] ?? '';
         $newPassword = $_POST['new_password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
+        $userId = (int)$_SESSION['user']['id'];
+
+        if (!$this->usuarioModel->verifyPassword($userId, $currentPassword)) {
+            setFlash('error', 'La contraseña actual es incorrecta.');
+            redirect('perfil');
+        }
 
         if ($newPassword !== $confirmPassword) {
             setFlash('error', 'Las contraseñas no coinciden.');
@@ -138,7 +145,7 @@ class UsuarioController {
         }
 
         try {
-            $this->usuarioModel->updatePassword((int)$_SESSION['user']['id'], $newPassword);
+            $this->usuarioModel->updatePassword($userId, $newPassword);
             setFlash('success', 'Contraseña actualizada correctamente.');
         } catch (Throwable $e) {
             setFlash('error', $e->getMessage());
